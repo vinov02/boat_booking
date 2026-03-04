@@ -1,0 +1,4 @@
+enum VendorActionResult {
+  updated,
+  deleted,
+}
