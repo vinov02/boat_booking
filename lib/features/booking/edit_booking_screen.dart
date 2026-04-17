@@ -9,10 +9,10 @@ class EditBookingScreen extends StatefulWidget {
   const EditBookingScreen({super.key, required this.booking});
 
   @override
-  State<EditBookingScreen> createState() => _EditBookingScreenState();
+  State<EditBookingScreen> createState() => EditBookingScreenState();
 }
 
-class _EditBookingScreenState extends State<EditBookingScreen> {
+class EditBookingScreenState extends State<EditBookingScreen> {
   // ---------------- TEXT CONTROLLERS ----------------
   late TextEditingController nameCtrl;
   late TextEditingController phoneCtrl;
@@ -75,7 +75,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
   }
 
   // ---------------- DATE PICKER ----------------
-  Future<void> _pickDateTime(bool isCheckIn) async {
+  Future<void> pickDateTime(bool isCheckIn) async {
     final date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -110,7 +110,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
   }
 
   // ---------------- FORMAT ----------------
-  String _formatDateTime(DateTime? d) {
+  String formatDateTime(DateTime? d) {
     if (d == null) return "-";
     return "${d.day.toString().padLeft(2, '0')}-"
         "${d.month.toString().padLeft(2, '0')}-"
@@ -134,15 +134,15 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
           child: Column(
             children: [
               // ---------------- CUSTOMER ----------------
-              _section("Customer Details", [
-                _field("Name", nameCtrl),
-                _field("Phone", phoneCtrl, keyboard: TextInputType.phone),
+              section("Customer Details", [
+                field("Name", nameCtrl),
+                field("Phone", phoneCtrl, keyboard: TextInputType.phone),
               ]),
         
               // ---------------- DATE & TIME ----------------
-              _section("Booking Time", [
-                _dateTile("Check-in", checkIn, () => _pickDateTime(true)),
-                _dateTile("Check-out", checkOut, () => _pickDateTime(false)),
+              section("Booking Time", [
+                dateTile("Check-in", checkIn, () => pickDateTime(true)),
+                dateTile("Check-out", checkOut, () => pickDateTime(false)),
               ]),
         
               // ---------------- CRUISE ----------------
@@ -205,22 +205,22 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
               // ]),
         
               // ---------------- PASSENGERS ----------------
-              _section("Passengers", [
-                _field("Adults", adultsCtrl, keyboard: TextInputType.number),
-                _field("Kids", kidsCtrl, keyboard: TextInputType.number),
+              section("Passengers", [
+                field("Adults", adultsCtrl, keyboard: TextInputType.number),
+                field("Kids", kidsCtrl, keyboard: TextInputType.number),
               ]),
         
               // ---------------- FOOD ----------------
-              _section("Food Details", [
-                _field("Veg", vegCtrl, keyboard: TextInputType.number),
-                _field("Non-Veg", nonVegCtrl, keyboard: TextInputType.number),
-                _field("Jain Food", jainCtrl, keyboard: TextInputType.number),
+              section("Food Details", [
+                field("Veg", vegCtrl, keyboard: TextInputType.number),
+                field("Non-Veg", nonVegCtrl, keyboard: TextInputType.number),
+                field("Jain Food", jainCtrl, keyboard: TextInputType.number),
               ]),
         
               // ---------------- PAYMENT ----------------
-              _section("Payment", [
-                _field("Rate", rateCtrl, keyboard: TextInputType.number),
-                _field(
+              section("Payment", [
+                field("Rate", rateCtrl, keyboard: TextInputType.number),
+                field(
                   "Collected",
                   collectedCtrl,
                   keyboard: TextInputType.number,
@@ -228,7 +228,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
               ]),
         
               // ---------------- NOTES ----------------
-              _section("Notes", [
+              section("Notes", [
                 TextField(
                   controller: noteCtrl,
                   maxLines: 3,
@@ -245,7 +245,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF0F766E),
                   ),
-                  onPressed: _onSave,
+                  onPressed: onSave,
                   child: const Text("Save Changes",style: TextStyle(color: Colors.white),),
                 ),
               ),
@@ -257,7 +257,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
   }
 
   // ---------------- SAVE PAYLOAD ----------------
-  void _onSave() {
+  void onSave() {
     Navigator.pop(context, {
       "name": nameCtrl.text,
       "phone": phoneCtrl.text,
@@ -278,7 +278,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
 
   // ---------------- UI HELPERS ----------------
 
-  Widget _section(String title, List<Widget> children) {
+  Widget section(String title, List<Widget> children) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -307,7 +307,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
     );
   }
 
-  Widget _field(
+  Widget field(
     String label,
     TextEditingController controller, {
     TextInputType keyboard = TextInputType.text,
@@ -325,11 +325,11 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
     );
   }
 
-  Widget _dateTile(String label, DateTime? value, VoidCallback onTap) {
+  Widget dateTile(String label, DateTime? value, VoidCallback onTap) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(label),
-      subtitle: Text(_formatDateTime(value)),
+      subtitle: Text(formatDateTime(value)),
       trailing: const Icon(Icons.calendar_today),
       onTap: onTap,
     );

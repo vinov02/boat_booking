@@ -14,21 +14,21 @@ class BookingDetailsScreen extends StatefulWidget {
   const BookingDetailsScreen({super.key, required this.booking});
 
   @override
-  State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+  State<BookingDetailsScreen> createState() => BookingDetailsScreenState();
 }
 
-class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
+class BookingDetailsScreenState extends State<BookingDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => BookingDetailsProvider(widget.booking),
-      child: const _BookingDetailsView(),
+      child: const BookingDetailsView(),
     );
   }
 }
 
-class _BookingDetailsView extends StatelessWidget {
-  const _BookingDetailsView();
+class BookingDetailsView extends StatelessWidget {
+  const BookingDetailsView();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _BookingDetailsView extends StatelessWidget {
           FloatingActionButton(
             heroTag: "whatsapp_fab",
             backgroundColor: const Color(0xFF25D366),
-            onPressed: () => _sendWhatsAppMessage(context, booking),
+            onPressed: () => sendWhatsAppMessage(context, booking),
             child: const FaIcon(
               FontAwesomeIcons.whatsapp,
               color: Colors.white,
@@ -59,7 +59,7 @@ class _BookingDetailsView extends StatelessWidget {
           FloatingActionButton(
             heroTag: "call_fab",
             backgroundColor: Colors.blue,
-            onPressed: () => _callCustomer(context, booking),
+            onPressed: () => callCustomer(context, booking),
             child: const Icon(Icons.add_ic_call, color: Colors.white),
           ),
         ],
@@ -76,71 +76,71 @@ class _BookingDetailsView extends StatelessWidget {
           child: Column(
             children: [
               // ---------------- CUSTOMER ----------------
-              _section(
+              section(
                 title: "Customer Details",
                 children: [
-                  _row("Name", booking.name),
-                  _row("Phone", booking.phone),
+                  row("Name", booking.name),
+                  row("Phone", booking.phone),
                 ],
               ),
         
               // ---------------- BOOKING INFO ----------------
-              _section(
+              section(
                 title: "Booking Info",
                 children: [
-                  _row("Booking Date", provider.formatDate(booking.bookingDate)),
-                  _row("Check-in", provider.formatDateTime(booking.checkin)),
-                  _row("Check-out", provider.formatDateTime(booking.checkout)),
+                  row("Booking Date", provider.formatDate(booking.bookingDate)),
+                  row("Check-in", provider.formatDateTime(booking.checkin)),
+                  row("Check-out", provider.formatDateTime(booking.checkout)),
                 ],
               ),
         
               // ---------------- CRUISE & VENDOR ----------------
-              _section(
+              section(
                 title: "Cruise & Vendor",
                 children: [
-                  _row("Cruise Type", booking.cruiseType?.name),
-                  _row("Vendor Company", booking.vendor?.id.toString()),
-                  _row("Vendor Name", booking.vendor?.name),
-                  _row("Vendor Phone", booking.vendor?.phone1),
+                  row("Cruise Type", booking.cruiseType?.name),
+                  row("Vendor Company", booking.vendor?.id.toString()),
+                  row("Vendor Name", booking.vendor?.name),
+                  row("Vendor Phone", booking.vendor?.phone1),
                 ],
               ),
         
               // ---------------- Ac time and Category ----------------
         
-              _section(
+              section(
                 title: "Ac time & Category",
                 children: [
-                  _row("Ac time start", formatTimeOnly(booking.acStartTime)),
-                  _row("Ac time end", formatTimeOnly(booking.acEndTime)),
-                  _row("Category", booking.category?.name),
+                  row("Ac time start", formatTimeOnly(booking.acStartTime)),
+                  row("Ac time end", formatTimeOnly(booking.acEndTime)),
+                  row("Category", booking.category?.name),
                 ],
               ),
         
               // ---------------- PASSENGERS ----------------
-              _section(
+              section(
                 title: "Passengers",
                 children: [
-                  _row("Adults", booking.passangers?.toString()),
-                  _row("Kids", booking.kids?.toString()),
+                  row("Adults", booking.passangers?.toString()),
+                  row("Kids", booking.kids?.toString()),
                 ],
               ),
         
               // ---------------- FOOD ----------------
-              _section(
+              section(
                 title: "Food Details",
                 children: [
-                  _row("Veg", booking.vegCount.toString()),
-                  _row("Non-Veg", booking.nonVegCount?.toString()),
-                  _row("Jain Food", booking.jainFood?.toString()),
+                  row("Veg", booking.vegCount.toString()),
+                  row("Non-Veg", booking.nonVegCount?.toString()),
+                  row("Jain Food", booking.jainFood?.toString()),
                 ],
               ),
         
               // ---------------- PAYMENT ----------------
-              _section(
+              section(
                 title: "Payment",
                 children: [
-                  _row("Rate", "₹ ${booking.rate}"),
-                  _row("Collected", "₹ ${booking.collectionAmount}"),
+                  row("Rate", "₹ ${booking.rate}"),
+                  row("Collected", "₹ ${booking.collectionAmount}"),
                 ],
               ),
         
@@ -276,7 +276,7 @@ class _BookingDetailsView extends StatelessWidget {
 
   // ---------------- UI HELPERS ----------------
 
-  Widget _section({required String title, required List<Widget> children}) {
+  Widget section({required String title, required List<Widget> children}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -305,7 +305,7 @@ class _BookingDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _row(String label, String? value) {
+  Widget row(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -395,7 +395,7 @@ Future<bool?> showDeleteConfirmationSheet(BuildContext context) {
   );
 }
 
-Future<void> _sendWhatsAppMessage(
+Future<void> sendWhatsAppMessage(
   BuildContext context,
   BoatBookingDetail booking,
 ) async {
@@ -411,7 +411,7 @@ Future<void> _sendWhatsAppMessage(
     return;
   }
 
-  final message = _buildWhatsAppMessage(booking);
+  final message = buildWhatsAppMessage(booking);
   final encodedMessage = Uri.encodeComponent(message);
 
   final uri = Uri.parse("https://wa.me/91$phone?text=$encodedMessage");
@@ -428,20 +428,20 @@ Future<void> _sendWhatsAppMessage(
   }
 }
 
-String _buildWhatsAppMessage(BoatBookingDetail b) {
+String buildWhatsAppMessage(BoatBookingDetail b) {
   String formatDate(String? iso) {
     if (iso == null) return "-";
     final d = DateTime.parse(iso);
     return "${d.day.toString().padLeft(2, '0')} "
-        "${_month(d.month)} ${d.year}";
+        "${month(d.month)} ${d.year}";
   }
 
   String formatDateTime(String? iso) {
     if (iso == null) return "-";
     final d = DateTime.parse(iso);
     return "${d.day.toString().padLeft(2, '0')} "
-        "${_month(d.month)} ${d.year} "
-        "${_formatTime(d)}";
+        "${month(d.month)} ${d.year} "
+        "${formatTime(d)}";
   }
 
   return '''
@@ -462,7 +462,7 @@ Thank you for choosing *Alleppey Boating!* 🌊
 • *Kids:* ${b.kids ?? 0}
 
 💳 *Payment Details:*
-• *Advance Paid:* ₹ ${_calculateBalance(b.rate, b.collectionAmount)}
+• *Advance Paid:* ₹ ${calculateBalance(b.rate, b.collectionAmount)}
 • *Total Amount:* ₹ ${b.rate ?? 0}
 • *Balance Due:* ₹ ${b.collectionAmount ?? 0}
 
@@ -471,7 +471,7 @@ Thank you for choosing *Alleppey Boating!* 🌊
 ''';
 }
 
-String _month(int m) {
+String month(int m) {
   const months = [
     "Jan",
     "Feb",
@@ -489,21 +489,21 @@ String _month(int m) {
   return months[m - 1];
 }
 
-String _formatTime(DateTime d) {
+String formatTime(DateTime d) {
   final hour = d.hour % 12 == 0 ? 12 : d.hour % 12;
   final period = d.hour >= 12 ? "PM" : "AM";
   return "${hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')} $period";
 }
 
-num _toNum(dynamic value) {
+num toNum(dynamic value) {
   if (value == null) return 0;
   if (value is num) return value;
   return num.tryParse(value.toString()) ?? 0;
 }
 
-String _calculateBalance(dynamic total, dynamic paid) {
-  final totalAmount = _toNum(total);
-  final paidAmount = _toNum(paid);
+String calculateBalance(dynamic total, dynamic paid) {
+  final totalAmount = toNum(total);
+  final paidAmount = toNum(paid);
 
   final balance = totalAmount - paidAmount;
 
@@ -513,7 +513,7 @@ String _calculateBalance(dynamic total, dynamic paid) {
   return safeBalance.toStringAsFixed(2);
 }
 
-Future<void> _callCustomer(
+Future<void> callCustomer(
   BuildContext context,
   BoatBookingDetail booking,
 ) async {

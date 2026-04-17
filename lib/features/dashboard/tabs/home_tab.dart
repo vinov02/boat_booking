@@ -15,7 +15,7 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? selectedDay;
   bool isPastDate(DateTime day) {
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
@@ -69,7 +69,7 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildBoatDropdown(home),
+                boatDropdown(home),
                 const SizedBox(height: 16),
                 Text(
                   "Availability Calendar",
@@ -80,15 +80,15 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _buildCalendar(home),
+                calendar(home),
                 const SizedBox(height: 10),
-                if (_selectedDay == null)
+                if (selectedDay == null)
                   const Text(
                     "Select a date to view availability",
                     style: TextStyle(color: Colors.grey),
                   )
                 else
-                  _buildAvailabilityInfo(home),
+                  availabilityInfo(home),
               ],
             ),
           ),
@@ -100,7 +100,7 @@ class _HomeTabState extends State<HomeTab> {
   // ------------------------------------------------
   // BOAT DROPDOWN (SAFE)
   // ------------------------------------------------
-  Widget _buildBoatDropdown(HomeProvider home) {
+  Widget boatDropdown(HomeProvider home) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -140,7 +140,7 @@ class _HomeTabState extends State<HomeTab> {
             if (boatId == null) return;
             final boat = home.boats.firstWhere((b) => b.id == boatId);
             home.selectBoat(boat);
-            setState(() => _selectedDay = null);
+            setState(() => selectedDay = null);
           },
         ),
       ),
@@ -150,7 +150,7 @@ class _HomeTabState extends State<HomeTab> {
   // ------------------------------------------------
   // CALENDAR (ALL INTERACTIONS RESTORED)
   // ------------------------------------------------
-  Widget _buildCalendar(HomeProvider home) {
+  Widget calendar(HomeProvider home) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -170,12 +170,12 @@ class _HomeTabState extends State<HomeTab> {
 
         focusedDay: _focusedDay,
 
-        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+        selectedDayPredicate: (day) => isSameDay(this.selectedDay, day),
 
         /// SINGLE TAP → select & show availability
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
-            _selectedDay = selectedDay;
+            this.selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
         },
@@ -189,15 +189,15 @@ class _HomeTabState extends State<HomeTab> {
 
         /// HEADER TAP → PICK YEAR & MONTH
         onHeaderTapped: (focusedDay) {
-          _showMonthYearPicker();
+          showMonthYearPicker();
         },
 
         /// LONG PRESS → booking or warning
         onDayLongPressed: (day, _) {
           if (isPastDate(day)) {
-            _showPastDateMessage();
+            showPastDateMessage();
           } else {
-            _showBookingBottomSheet(home, day);
+            showBookingBottomSheet(home, day);
           }
         },
 
@@ -251,7 +251,7 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  void _showMonthYearPicker() {
+  void showMonthYearPicker() {
     showDatePicker(
       context: context,
       initialDate: _focusedDay,
@@ -267,7 +267,7 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
-  void _showPastDateMessage() {
+  void showPastDateMessage() {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -317,7 +317,7 @@ class _HomeTabState extends State<HomeTab> {
   // ------------------------------------------------
   // LONG PRESS → BOTTOM SHEET
   // ------------------------------------------------
-  void _showBookingBottomSheet(HomeProvider home, DateTime day) {
+  void showBookingBottomSheet(HomeProvider home, DateTime day) {
     final availability =
         home.availabilityMap[DateTime.utc(day.year, day.month, day.day)];
 
@@ -461,8 +461,8 @@ class _HomeTabState extends State<HomeTab> {
   // ------------------------------------------------
   // AVAILABILITY INFO CARD
   // ------------------------------------------------
-  Widget _buildAvailabilityInfo(HomeProvider home) {
-  final selected = _selectedDay!;
+  Widget availabilityInfo(HomeProvider home) {
+  final selected = selectedDay!;
   final isPast = isPastDate(selected);
 
   final availability = home.availabilityMap[
@@ -502,7 +502,7 @@ class _HomeTabState extends State<HomeTab> {
 
   /// ---------------- NO BOOKING (TODAY / FUTURE) ----------------
   if (availability == null) {
-    return _availableCard(home);
+    return availableCard(home);
   }
 
   final isBooked = availability.status == "Booked";
@@ -559,7 +559,7 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
               onPressed: () {
-                _showBookingDetailsDialog(
+                showBookingDetailsDialog(
                   context,
                   availability.bookingDetail!,
                 );
@@ -582,7 +582,7 @@ class _HomeTabState extends State<HomeTab> {
                 backgroundColor: const Color(0xFF0F766E),
               ),
               onPressed: () {
-                _showBookingBottomSheet(home, selected);
+                showBookingBottomSheet(home, selected);
               },
             ),
           ),
@@ -590,7 +590,7 @@ class _HomeTabState extends State<HomeTab> {
     ),
   );
 }
-Widget _availableCard(HomeProvider home) {
+Widget availableCard(HomeProvider home) {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -620,7 +620,7 @@ Widget _availableCard(HomeProvider home) {
   // ------------------------------------------------
   // BOOKING DETAILS DIALOG
   // ------------------------------------------------
-  void _showBookingDetailsDialog(
+  void showBookingDetailsDialog(
     BuildContext context,
     BoatBookingDetail booking,
   ) {
@@ -636,12 +636,12 @@ Widget _availableCard(HomeProvider home) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow("Customer", booking.name),
-              _detailRow("Phone", booking.phone),
-              _detailRow("Passengers", booking.passangers?.toString()),
-              _detailRow("Kids", booking.kids?.toString()),
-              _detailRow("Rate", "₹ ${booking.rate}"),
-              _detailRow("Collected", "₹ ${booking.collectionAmount}"),
+              detailRow("Customer", booking.name),
+              detailRow("Phone", booking.phone),
+              detailRow("Passengers", booking.passangers?.toString()),
+              detailRow("Kids", booking.kids?.toString()),
+              detailRow("Rate", "₹ ${booking.rate}"),
+              detailRow("Collected", "₹ ${booking.collectionAmount}"),
             ],
           ),
           actions: [
@@ -655,7 +655,7 @@ Widget _availableCard(HomeProvider home) {
     );
   }
 
-  Widget _detailRow(String label, String? value) {
+  Widget detailRow(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(

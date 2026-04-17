@@ -9,11 +9,11 @@ class AddVendorScreen extends StatefulWidget {
   const AddVendorScreen({super.key});
 
   @override
-  State<AddVendorScreen> createState() => _AddVendorScreenState();
+  State<AddVendorScreen> createState() => AddVendorScreenState();
 }
 
-class _AddVendorScreenState extends State<AddVendorScreen> {
-  final _formKey = GlobalKey<FormState>();
+class AddVendorScreenState extends State<AddVendorScreen> {
+  final formKey = GlobalKey<FormState>();
 
   final companyController = TextEditingController();
   final nameController = TextEditingController();
@@ -44,11 +44,11 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _headerCard(),
+              headerCard(),
               const SizedBox(height: 16),
-              _formCard(),
+              formCard(),
               const SizedBox(height: 24),
-              _submitButton(),
+              submitButton(),
             ],
           ),
         ),
@@ -59,7 +59,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   // --------------------------------------------------
   // HEADER
   // --------------------------------------------------
-  Widget _headerCard() {
+  Widget headerCard() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -96,40 +96,40 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   // --------------------------------------------------
   // FORM CARD
   // --------------------------------------------------
-  Widget _formCard() {
+  Widget formCard() {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             children: [
-              _field(
+              field(
                 label: "Company Name",
                 controller: companyController,
                 icon: Icons.business,
               ),
-              _field(
+              field(
                 label: "Contact Person",
                 controller: nameController,
                 icon: Icons.person,
               ),
-              _field(
+              field(
                 label: "Phone Number",
                 controller: phone1Controller,
                 icon: Icons.phone,
                 keyboard: TextInputType.phone,
               ),
-              _field(
+              field(
                 label: "Alternate Phone",
                 controller: phone2Controller,
                 icon: Icons.phone_android,
                 keyboard: TextInputType.phone,
                 required: false,
               ),
-              _field(
+              field(
                 label: "Address",
                 controller: addressController,
                 icon: Icons.location_on,
@@ -146,7 +146,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   // --------------------------------------------------
   // SUBMIT BUTTON
   // --------------------------------------------------
-  Widget _submitButton() {
+  Widget submitButton() {
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -157,7 +157,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: isLoading ? null : _submitVendor,
+        onPressed: isLoading ? null : submitVendor,
         child: isLoading
             ? const SizedBox(
                 height: 22,
@@ -182,8 +182,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   // --------------------------------------------------
   // API SUBMIT
   // --------------------------------------------------
-  Future<void> _submitVendor() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> submitVendor() async {
+    if (!formKey.currentState!.validate()) return;
 
     try {
       setState(() => isLoading = true);
@@ -249,10 +249,10 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
           Navigator.pop(context, true);
         });
       } else {
-        _snack(response.message);
+        snack(response.message);
       }
     } catch (_) {
-      _snack("Something went wrong");
+      snack("Something went wrong");
     } finally {
       setState(() => isLoading = false);
     }
@@ -261,7 +261,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   // --------------------------------------------------
   // HELPERS
   // --------------------------------------------------
-  Widget _field({
+  Widget field({
     required String label,
     required TextEditingController controller,
     required IconData icon,
@@ -286,7 +286,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
     );
   }
 
-  void _snack(String msg) {
+  void snack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }

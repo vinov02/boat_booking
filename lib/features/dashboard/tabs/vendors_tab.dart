@@ -11,11 +11,11 @@ class VendorsTab extends StatefulWidget {
   const VendorsTab({super.key});
 
   @override
-  State<VendorsTab> createState() => _VendorsTabState();
+  State<VendorsTab> createState() => VendorsTabState();
 }
 
-class _VendorsTabState extends State<VendorsTab> {
-  final TextEditingController _searchController = TextEditingController();
+class VendorsTabState extends State<VendorsTab> {
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -25,14 +25,14 @@ class _VendorsTabState extends State<VendorsTab> {
       context.read<VendorsProvider>().loadVendors();
     });
 
-    _searchController.addListener(() {
-      context.read<VendorsProvider>().onSearchChanged(_searchController.text);
+    searchController.addListener(() {
+      context.read<VendorsProvider>().onSearchChanged(searchController.text);
     });
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -55,7 +55,7 @@ class _VendorsTabState extends State<VendorsTab> {
           body: SafeArea(
             child: Column(
               children: [
-                _buildSearchBar(),
+                buildSearchBar(),
             
                 if (provider.isSearching)
                   const LinearProgressIndicator(minHeight: 2),
@@ -70,7 +70,7 @@ class _VendorsTabState extends State<VendorsTab> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: provider.filteredVendors.length,
                             itemBuilder: (context, index) {
-                              return _vendorCard(
+                              return vendorCard(
                                 context,
                                 provider.filteredVendors[index],
                               );
@@ -99,11 +99,11 @@ class _VendorsTabState extends State<VendorsTab> {
   // ------------------------------------------------------
   // SEARCH BAR
   // ------------------------------------------------------
-  Widget _buildSearchBar() {
+  Widget buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: TextField(
-        controller: _searchController,
+        controller: searchController,
         decoration: InputDecoration(
           hintText: "Search vendors, company, etc...",
           prefixIcon: const Icon(Icons.search),
@@ -121,7 +121,7 @@ class _VendorsTabState extends State<VendorsTab> {
   // ------------------------------------------------------
   // VENDOR CARD
   // ------------------------------------------------------
-  Widget _vendorCard(BuildContext context, Vendor vendor) {
+  Widget vendorCard(BuildContext context, Vendor vendor) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(

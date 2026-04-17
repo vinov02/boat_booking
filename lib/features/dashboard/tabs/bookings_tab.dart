@@ -9,10 +9,10 @@ class BookingsTab extends StatefulWidget {
   const BookingsTab({super.key});
 
   @override
-  State<BookingsTab> createState() => _BookingsTabState();
+  State<BookingsTab> createState() => BookingsTabState();
 }
 
-class _BookingsTabState extends State<BookingsTab> {
+class BookingsTabState extends State<BookingsTab> {
   @override
   void initState() {
     super.initState();
@@ -38,7 +38,7 @@ class _BookingsTabState extends State<BookingsTab> {
       body: SafeArea(
         child: Column(
           children: [
-            _searchBar(context),
+            searchBar(context),
             if (provider.isSearching)
               const LinearProgressIndicator(minHeight: 2),
             Expanded(
@@ -50,7 +50,7 @@ class _BookingsTabState extends State<BookingsTab> {
                         padding: const EdgeInsets.all(16),
                         itemCount: provider.filteredBookings.length,
                         itemBuilder: (_, i) =>
-                            _bookingCard(context, provider.filteredBookings[i]),
+                            bookingCard(context, provider.filteredBookings[i]),
                       ),
               ),
             ),
@@ -60,7 +60,7 @@ class _BookingsTabState extends State<BookingsTab> {
     );
   }
 
-  Widget _searchBar(BuildContext context) {
+  Widget searchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: TextField(
@@ -79,7 +79,7 @@ class _BookingsTabState extends State<BookingsTab> {
     );
   }
 }
-Widget _bookingCard(BuildContext context, BoatBookingDetail booking) {
+Widget bookingCard(BuildContext context, BoatBookingDetail booking) {
   String formatDate(String? iso) {
     if (iso == null) return "-";
     final d = DateTime.parse(iso);
@@ -147,12 +147,12 @@ Widget _bookingCard(BuildContext context, BoatBookingDetail booking) {
           const SizedBox(height: 8),
           Row(
             children: [
-              _chip(
+              chip(
                 booking.cruiseType?.name ?? "Cruise",
                 Icons.directions_boat,
               ),
               const SizedBox(width: 8),
-              _chip(
+              chip(
                 "₹ ${booking.rate}",
                 Icons.currency_rupee,
               ),
@@ -163,7 +163,7 @@ Widget _bookingCard(BuildContext context, BoatBookingDetail booking) {
     ),
   );
 }
-Widget _chip(String text, IconData icon) {
+Widget chip(String text, IconData icon) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(

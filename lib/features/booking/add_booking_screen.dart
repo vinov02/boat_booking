@@ -24,11 +24,11 @@ class AddBookingScreen extends StatefulWidget {
   });
 
   @override
-  State<AddBookingScreen> createState() => _AddBookingScreenState();
+  State<AddBookingScreen> createState() => AddBookingScreenState();
 }
 
-class _AddBookingScreenState extends State<AddBookingScreen> {
-  final _formKey = GlobalKey<FormState>();
+class AddBookingScreenState extends State<AddBookingScreen> {
+  final formKey = GlobalKey<FormState>();
   Vendor? selectedVendor;
 
   final TextEditingController nameController = TextEditingController();
@@ -41,8 +41,8 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
   final TextEditingController jainController = TextEditingController();
   final TextEditingController passengerController = TextEditingController();
   final TextEditingController kidsController = TextEditingController();
-  final FocusNode _cruiseFocusNode = FocusNode();
-  final FocusNode _categoryFocusNode = FocusNode();
+  final FocusNode cruiseFocusNode = FocusNode();
+  final FocusNode categoryFocusNode = FocusNode();
   List<Vendor> vendors = [];
 
   bool isVendorLoading = false;
@@ -118,15 +118,15 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               children: [
-                _card(
+                card(
                   title: "Booking Info",
                   child: Column(
                     children: [
-                      _infoRow("Boat", widget.selectedBoat),
-                      _infoRow(
+                      infoRow("Boat", widget.selectedBoat),
+                      infoRow(
                         "Booking Date",
                         "${widget.bookingDate.day}-${widget.bookingDate.month}-${widget.bookingDate.year}",
                       ),
@@ -188,27 +188,27 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         
                 SizedBox(height: 20),
         
-                _card(
+                card(
                   title: "Trip Details",
                   child: Column(
                     children: [
-                      _datePickerTile(
+                      datePickerTile(
                         label: "Check-in Date",
                         date: checkInDate,
                         onPick: (d) => setState(() => checkInDate = d),
                       ),
-                      _timePickerTile(
+                      timePickerTile(
                         label: "Check-in Time",
                         time: checkInTime,
                         onPick: (t) => setState(() => checkInTime = t),
                       ),
         
-                      _datePickerTile(
+                      datePickerTile(
                         label: "Check-out Date",
                         date: checkOutDate,
                         onPick: (d) => setState(() => checkOutDate = d),
                       ),
-                      _timePickerTile(
+                      timePickerTile(
                         label: "Check-out Time",
                         time: checkOutTime,
                         onPick: (t) => setState(() => checkOutTime = t),
@@ -337,12 +337,12 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         
                       SizedBox(height: 20),
         
-                      _materialField(
+                      materialField(
                         "Enter Rate (₹)",
                         rateController,
                         keyboard: TextInputType.number,
                       ),
-                      _materialField(
+                      materialField(
                         "Enter Collection Amount (₹)",
                         collectionController,
                         keyboard: TextInputType.number,
@@ -351,7 +351,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: _timePickerField(
+                            child: timePickerField(
                               label: "AC Start Time",
                               time: acStartTime?.format(context),
                               onTap: () async {
@@ -367,7 +367,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: _timePickerField(
+                            child: timePickerField(
                               label: "AC End Time",
                               time: acEndTime?.format(context),
                               onTap: () async {
@@ -390,21 +390,21 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                     ],
                   ),
                 ),
-                _card(
+                card(
                   title: "Food Count",
                   child: Column(
                     children: [
                       Row(
                         children: [
                           Expanded(
-                            child: _numberInputField(
+                            child: numberInputField(
                               label: "Veg Count",
                               controller: vegController,
                             ),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: _numberInputField(
+                            child: numberInputField(
                               label: "Non-Veg Count",
                               controller: nonVegController,
                             ),
@@ -412,19 +412,19 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      _numberInputField(
+                      numberInputField(
                         label: "Jain Food Count",
                         controller: jainController,
                       ),
                     ],
                   ),
                 ),
-                _card(
+                card(
                   title: "Customer Details",
                   child: Column(
                     children: [
-                      _materialField("Enter Customer Name", nameController),
-                      _materialField(
+                      materialField("Enter Customer Name", nameController),
+                      materialField(
                         "Enter Phone Number",
                         phoneController,
                         keyboard: TextInputType.phone,
@@ -433,9 +433,9 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                   ),
                 ),
         
-                _card(
+                card(
                   title: "Additional Notes",
-                  child: _materialField(
+                  child: materialField(
                     "Special requests",
                     noteController,
                     maxLines: 3,
@@ -454,7 +454,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    onPressed: _submitBooking,
+                    onPressed: submitBooking,
                     child: const Text(
                       "Confirm Booking",
                       style: TextStyle(
@@ -485,10 +485,10 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
       cruiseTypes = await Api().getCruiseTypes(token: token);
       cruiseLoadedOnce = true;
       Future.delayed(const Duration(milliseconds: 100), () {
-        _cruiseFocusNode.requestFocus();
+        cruiseFocusNode.requestFocus();
       });
     } catch (e) {
-      _snack("Failed to load cruise types");
+      snack("Failed to load cruise types");
     } finally {
       setState(() => isCruiseLoading = false);
     }
@@ -506,10 +506,10 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
       CategoryTypes = await Api().getCategoryTypes(token: token);
       CategoryLoadedOnce = true;
       Future.delayed(const Duration(milliseconds: 100), () {
-        _categoryFocusNode.requestFocus();
+        categoryFocusNode.requestFocus();
       });
     } catch (e) {
-      _snack("Failed to load cruise types");
+      snack("Failed to load cruise types");
     } finally {
       setState(() => isCategoryLoading = false);
     }
@@ -518,31 +518,31 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
   // =========================
   // SUBMIT
   // =========================
-  Future<void> _submitBooking() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> submitBooking() async {
+    if (!formKey.currentState!.validate()) return;
 
     if (checkInDate == null ||
         checkOutDate == null ||
         checkInTime == null ||
         checkOutTime == null) {
-      _snack("Please select date & time");
+      snack("Please select date & time");
       return;
     }
 
-    final checkIn = _combine(checkInDate!, checkInTime!);
-    final checkOut = _combine(checkOutDate!, checkOutTime!);
+    final checkIn = combine(checkInDate!, checkInTime!);
+    final checkOut = combine(checkOutDate!, checkOutTime!);
 
     if (!checkOut.isAfter(checkIn)) {
-      _snack("Checkout must be after check-in");
+      snack("Checkout must be after check-in");
       return;
     }
     if (selectedCruiseTypeId == null) {
-      _snack("Please select cruise type");
+      snack("Please select cruise type");
       return;
     }
 
     if (selectedCategoryTypeId == null) {
-      _snack("Please select category");
+      snack("Please select category");
       return;
     }
 
@@ -550,7 +550,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
       final token = await SharedPrefManager.getString(Constants.USER_TOKEN);
 
       if (token == null) {
-        _snack("Session expired. Please login again.");
+        snack("Session expired. Please login again.");
         return;
       }
 
@@ -584,10 +584,10 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         "rate": double.tryParse(rateController.text) ?? 0,
         "collection_amount": double.tryParse(collectionController.text) ?? 0,
         "ac_time_start": acStartTime != null
-            ? _combineDateAndTime(checkInDate!, acStartTime!).toIso8601String()
+            ? combineDateAndTime(checkInDate!, acStartTime!).toIso8601String()
             : null,
         "ac_time_out": acEndTime != null
-            ? _combineDateAndTime(checkInDate!, acEndTime!).toIso8601String()
+            ? combineDateAndTime(checkInDate!, acEndTime!).toIso8601String()
             : null,
         "veg_food": vegController.text,
         "non_veg_food": nonVegController.text,
@@ -617,26 +617,26 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
           MaterialPageRoute(builder: (_) => const DashboardScreen()),
         );
       } else {
-        _snack(response.message ?? "Booking failed");
+        snack(response.message ?? "Booking failed");
       }
     } catch (e) {
       debugPrint("BOOKING ERROR: $e");
-      _snack("Something went wrong. Try again.");
+      snack("Something went wrong. Try again.");
     }
   }
 
-  DateTime _combine(DateTime date, TimeOfDay time) {
+  DateTime combine(DateTime date, TimeOfDay time) {
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
-  void _snack(String msg) {
+  void snack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   // =========================
   // UI HELPERS
   // =========================
-  Widget _card({required String title, required Widget child}) {
+  Widget card({required String title, required Widget child}) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -661,7 +661,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
     );
   }
 
-  Widget _materialField(
+  Widget materialField(
     String label,
     TextEditingController controller, {
     TextInputType keyboard = TextInputType.text,
@@ -685,7 +685,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
 
   
 
-  Widget _timePickerTile({
+  Widget timePickerTile({
     required String label,
     required TimeOfDay? time,
     required Function(TimeOfDay) onPick,
@@ -707,7 +707,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
     );
   }
 
-  Widget _datePickerTile({
+  Widget datePickerTile({
     required String label,
     required DateTime? date,
     required Function(DateTime) onPick,
@@ -731,7 +731,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -744,7 +744,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
   }
 }
 
-Widget _timePickerField({
+Widget timePickerField({
   required String label,
   required String? time,
   required VoidCallback onTap,
@@ -761,7 +761,7 @@ Widget _timePickerField({
   );
 }
 
-Widget _numberInputField({
+Widget numberInputField({
   required String label,
   required TextEditingController controller,
 }) {
@@ -781,6 +781,6 @@ Widget _numberInputField({
   );
 }
 
-DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
+DateTime combineDateAndTime(DateTime date, TimeOfDay time) {
   return DateTime(date.year, date.month, date.day, time.hour, time.minute);
 }

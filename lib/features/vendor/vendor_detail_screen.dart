@@ -13,10 +13,10 @@ class VendorDetailScreen extends StatefulWidget {
   const VendorDetailScreen({super.key, required this.vendor});
 
   @override
-  State<VendorDetailScreen> createState() => _VendorDetailScreenState();
+  State<VendorDetailScreen> createState() => VendorDetailScreenState();
 }
 
-class _VendorDetailScreenState extends State<VendorDetailScreen> {
+class VendorDetailScreenState extends State<VendorDetailScreen> {
   late Vendor vendor;
   bool isLoading = false;
 
@@ -29,7 +29,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
   // --------------------------------------------------
   // REFRESH VENDOR
   // --------------------------------------------------
-  Future<void> _reloadVendor() async {
+  Future<void> reloadVendor() async {
     try {
       setState(() => isLoading = true);
 
@@ -47,7 +47,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
         });
       }
     } catch (_) {
-      _safeSnack("Failed to refresh vendor");
+      safeSnack("Failed to refresh vendor");
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
@@ -70,27 +70,27 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      floatingActionButton: _actionButtons(),
+      floatingActionButton: actionButtons(),
 
       body: SafeArea(
         child: RefreshIndicator(
           color: const Color(0xFF0F766E),
-          onRefresh: _reloadVendor,
+          onRefresh: reloadVendor,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _headerCard(),
+                headerCard(),
                 const SizedBox(height: 16),
-                _infoCard(Icons.person, "Vendor Name", vendor.name!),
-                _infoCard(Icons.phone, "Phone Number", vendor.phone1 ?? "-"),
-                _infoCard(
+                infoCard(Icons.person, "Vendor Name", vendor.name!),
+                infoCard(Icons.phone, "Phone Number", vendor.phone1 ?? "-"),
+                infoCard(
                   Icons.phone_android,
                   "Alternate Phone",
                   vendor.phone2 ?? "-",
                 ),
-                _infoCard(
+                infoCard(
                   Icons.location_on,
                   "Address",
                   vendor.address ?? "-",
@@ -108,7 +108,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
   // --------------------------------------------------
   // HEADER CARD
   // --------------------------------------------------
-  Widget _headerCard() {
+  Widget headerCard() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -145,7 +145,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
   // --------------------------------------------------
   // INFO CARD
   // --------------------------------------------------
-  Widget _infoCard(
+  Widget infoCard(
     IconData icon,
     String title,
     String value, {
@@ -203,21 +203,21 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
   // --------------------------------------------------
   // FLOATING BUTTONS
   // --------------------------------------------------
-  Widget _actionButtons() {
+  Widget actionButtons() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FloatingActionButton(
           heroTag: "edit",
           backgroundColor: const Color(0xFF0F766E),
-          onPressed: _showEditSheet,
+          onPressed: showEditSheet,
           child: const Icon(Icons.edit, color: Colors.white),
         ),
         const SizedBox(height: 12),
         FloatingActionButton(
           heroTag: "delete",
           backgroundColor: Colors.red,
-          onPressed: _showDeleteSheet,
+          onPressed: showDeleteSheet,
           child: const Icon(Icons.delete, color: Colors.white),
         ),
       ],
@@ -227,7 +227,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
   // --------------------------------------------------
   // EDIT VENDOR
   // --------------------------------------------------
-  void _showEditSheet() {
+  void showEditSheet() {
     final company = TextEditingController(text: vendor.companyName);
     final name = TextEditingController(text: vendor.name);
     final phone1 = TextEditingController(text: vendor.phone1);
@@ -251,11 +251,11 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _editField("Company Name", company),
-              _editField("Contact Name", name),
-              _editField("Phone 1", phone1),
-              _editField("Phone 2", phone2),
-              _editField("Address", address, maxLines: 3),
+              editField("Company Name", company),
+              editField("Contact Name", name),
+              editField("Phone 1", phone1),
+              editField("Phone 2", phone2),
+              editField("Address", address, maxLines: 3),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -269,7 +269,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
                   ),
                   onPressed: () async {
                     Navigator.pop(context);
-                    await _updateVendor({
+                    await updateVendor({
                       "company_name": company.text.trim(),
                       "name": name.text.trim(),
                       "phone1": phone1.text.trim(),
@@ -290,7 +290,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
     );
   }
 
-  Widget _editField(String label, TextEditingController c, {int maxLines = 1}) {
+  Widget editField(String label, TextEditingController c, {int maxLines = 1}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
@@ -304,7 +304,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
     );
   }
 
-  Future<void> _updateVendor(Map<String, dynamic> body) async {
+  Future<void> updateVendor(Map<String, dynamic> body) async {
     try {
       final token = await SharedPrefManager.getString(Constants.USER_TOKEN);
       if (token == null) return;
@@ -318,7 +318,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
       );
 
       if (response.success == true) {
-        await _reloadVendor();
+        await reloadVendor();
 
         if (!mounted) return;
 
@@ -366,17 +366,17 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
 
         Navigator.pop(context, VendorActionResult.updated);
       } else {
-        _safeSnack(response.message);
+        safeSnack(response.message);
       }
     } catch (_) {
-      _safeSnack("Something went wrong");
+      safeSnack("Something went wrong");
     }
   }
 
   // --------------------------------------------------
   // DELETE
   // --------------------------------------------------
-  void _showDeleteSheet() {
+  void showDeleteSheet() {
     showModalBottomSheet(
       context: context,
       isDismissible: false,
@@ -434,14 +434,14 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
                       onPressed: () async {
                         Navigator.of(sheetContext).pop(); 
 
-                        final isDeleted = await _deleteVendor();
+                        final isDeleted = await deleteVendor();
 
                         if (!mounted) return;
 
                         if (isDeleted) {
                           showTopSnackBar(
                             Overlay.of(context),
-                            _successToast("Vendor deleted successfully"),
+                            successToast("Vendor deleted successfully"),
                             displayDuration: const Duration(seconds: 2),
                           );
 
@@ -454,7 +454,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
                             VendorActionResult.deleted,
                           );
                         } else {
-                          _safeSnack("Delete failed");
+                          safeSnack("Delete failed");
                         }
                       },
 
@@ -473,7 +473,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
     );
   }
 
-  Future<bool> _deleteVendor() async {
+  Future<bool> deleteVendor() async {
   try {
     final token = await SharedPrefManager.getString(Constants.USER_TOKEN);
     if (token == null) return false;
@@ -491,7 +491,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
 }
 
 
-  Widget _successToast(String msg) {
+  Widget successToast(String msg) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -522,7 +522,7 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
     );
   }
 
-  void _safeSnack(String msg) {
+  void safeSnack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
