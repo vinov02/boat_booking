@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: pages[dashboard.currentIndex],
+      body: SafeArea(child: pages[dashboard.currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: dashboard.currentIndex,
         onTap: (index) async{

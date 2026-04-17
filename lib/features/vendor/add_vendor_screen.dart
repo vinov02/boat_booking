@@ -39,16 +39,18 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _headerCard(),
-            const SizedBox(height: 16),
-            _formCard(),
-            const SizedBox(height: 24),
-            _submitButton(),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _headerCard(),
+              const SizedBox(height: 16),
+              _formCard(),
+              const SizedBox(height: 24),
+              _submitButton(),
+            ],
+          ),
         ),
       ),
     );

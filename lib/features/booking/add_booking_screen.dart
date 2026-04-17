@@ -114,357 +114,359 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         backgroundColor: const Color(0xFF0F766E),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _card(
-                title: "Booking Info",
-                child: Column(
-                  children: [
-                    _infoRow("Boat", widget.selectedBoat),
-                    _infoRow(
-                      "Booking Date",
-                      "${widget.bookingDate.day}-${widget.bookingDate.month}-${widget.bookingDate.year}",
-                    ),
-                  ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _card(
+                  title: "Booking Info",
+                  child: Column(
+                    children: [
+                      _infoRow("Boat", widget.selectedBoat),
+                      _infoRow(
+                        "Booking Date",
+                        "${widget.bookingDate.day}-${widget.bookingDate.month}-${widget.bookingDate.year}",
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-
-              DropdownSearch<Vendor>(
-                items: vendors,
-                selectedItem: selectedVendor,
-
-                itemAsString: (Vendor v) =>
-                    "${v.companyName ?? 'Unknown Company'}"
-                    " [${v.name ?? 'Unknown'}]",
-
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-
-                  /// 🔥 This hides the visible search bar
-                  searchFieldProps: TextFieldProps(
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      border: InputBorder.none,
-                      hintText: "Type to search...",
+        
+                DropdownSearch<Vendor>(
+                  items: vendors,
+                  selectedItem: selectedVendor,
+        
+                  itemAsString: (Vendor v) =>
+                      "${v.companyName ?? 'Unknown Company'}"
+                      " [${v.name ?? 'Unknown'}]",
+        
+                  popupProps: PopupProps.menu(
+                    showSearchBox: true,
+        
+                    /// 🔥 This hides the visible search bar
+                    searchFieldProps: TextFieldProps(
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        hintText: "Type to search...",
+                      ),
+                    ),
+        
+                    itemBuilder: (context, vendor, isSelected) {
+                      return ListTile(
+                        title: Text(
+                          vendor.companyName ?? "Unknown Company",
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(vendor.name ?? "Unknown"),
+                      );
+                    },
+                  ),
+        
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Vendor",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
-
-                  itemBuilder: (context, vendor, isSelected) {
-                    return ListTile(
-                      title: Text(
-                        vendor.companyName ?? "Unknown Company",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(vendor.name ?? "Unknown"),
-                    );
+        
+                  onChanged: (vendor) {
+                    setState(() {
+                      selectedVendor = vendor;
+                      selectedVendorId = vendor?.id;
+                    });
                   },
+        
+                  validator: (vendor) =>
+                      vendor == null ? "Please select vendor" : null,
                 ),
-
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Vendor",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+        
+                SizedBox(height: 20),
+        
+                _card(
+                  title: "Trip Details",
+                  child: Column(
+                    children: [
+                      _datePickerTile(
+                        label: "Check-in Date",
+                        date: checkInDate,
+                        onPick: (d) => setState(() => checkInDate = d),
+                      ),
+                      _timePickerTile(
+                        label: "Check-in Time",
+                        time: checkInTime,
+                        onPick: (t) => setState(() => checkInTime = t),
+                      ),
+        
+                      _datePickerTile(
+                        label: "Check-out Date",
+                        date: checkOutDate,
+                        onPick: (d) => setState(() => checkOutDate = d),
+                      ),
+                      _timePickerTile(
+                        label: "Check-out Time",
+                        time: checkOutTime,
+                        onPick: (t) => setState(() => checkOutTime = t),
+                      ),
+        
+                      SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Select Category",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      DropdownButtonFormField<int>(
+                        value: selectedCruiseTypeId,
+                        decoration: InputDecoration(
+                          labelText: "Cruise Type",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        items: isCruiseLoading
+                            ? []
+                            : cruiseTypes.map((type) {
+                                return DropdownMenuItem<int>(
+                                  value: type.id,
+                                  child: Text(type.name!),
+                                );
+                              }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCruiseTypeId = value;
+                          });
+                        },
+                        validator: (value) =>
+                            value == null ? "Please select cruise type" : null,
+                        hint: isCruiseLoading
+                            ? const Text("Loading...")
+                            : const Text("Select cruise type"),
+                      ),
+        
+                      SizedBox(height: 20),
+                      DropdownButtonFormField<int>(
+                        value: selectedCategoryTypeId,
+                        decoration: InputDecoration(
+                          labelText: "Category",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        items: isCategoryLoading
+                            ? []
+                            : CategoryTypes.map((type) {
+                                return DropdownMenuItem<int>(
+                                  value: type.id,
+                                  child: Text(type.name),
+                                );
+                              }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCategoryTypeId = value;
+                          });
+                        },
+                        validator: (value) =>
+                            value == null ? "Please select category" : null,
+                        hint: isCategoryLoading
+                            ? const Text("Loading...")
+                            : const Text("Select Category"),
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: passengerController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        decoration: InputDecoration(
+                          labelText: "Enter number of Passengers",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter number of passengers";
+                          }
+                          final n = int.tryParse(value);
+                          if (n == null || n <= 0) {
+                            return "Enter a valid number";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          passengers = int.tryParse(value) ?? 0; // ✅ INT
+                        },
+                      ),
+        
+                      SizedBox(height: 20),
+        
+                      TextFormField(
+                        controller: kidsController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        decoration: InputDecoration(
+                          labelText: "Enter number of Kids",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter number of kids";
+                          }
+                          final n = int.tryParse(value);
+                          if (n == null || n < 0) {
+                            return "Enter a valid number";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          kids = int.tryParse(value) ?? 0;
+                        },
+                      ),
+        
+                      SizedBox(height: 20),
+        
+                      _materialField(
+                        "Enter Rate (₹)",
+                        rateController,
+                        keyboard: TextInputType.number,
+                      ),
+                      _materialField(
+                        "Enter Collection Amount (₹)",
+                        collectionController,
+                        keyboard: TextInputType.number,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _timePickerField(
+                              label: "AC Start Time",
+                              time: acStartTime?.format(context),
+                              onTap: () async {
+                                final picked = await showTimePicker(
+                                  context: context,
+                                  initialTime: acStartTime ?? TimeOfDay.now(),
+                                );
+                                if (picked != null) {
+                                  setState(() => acStartTime = picked);
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _timePickerField(
+                              label: "AC End Time",
+                              time: acEndTime?.format(context),
+                              onTap: () async {
+                                final picked = await showTimePicker(
+                                  context: context,
+                                  initialTime: acEndTime ?? TimeOfDay.now(),
+                                );
+                                if (picked != null) {
+                                  setState(() => acEndTime = picked);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+        
+                      const SizedBox(height: 16),
+        
+                      // ---------------- FOOD COUNTS ----------------
+                    ],
+                  ),
+                ),
+                _card(
+                  title: "Food Count",
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _numberInputField(
+                              label: "Veg Count",
+                              controller: vegController,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _numberInputField(
+                              label: "Non-Veg Count",
+                              controller: nonVegController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _numberInputField(
+                        label: "Jain Food Count",
+                        controller: jainController,
+                      ),
+                    ],
+                  ),
+                ),
+                _card(
+                  title: "Customer Details",
+                  child: Column(
+                    children: [
+                      _materialField("Enter Customer Name", nameController),
+                      _materialField(
+                        "Enter Phone Number",
+                        phoneController,
+                        keyboard: TextInputType.phone,
+                      ),
+                    ],
+                  ),
+                ),
+        
+                _card(
+                  title: "Additional Notes",
+                  child: _materialField(
+                    "Special requests",
+                    noteController,
+                    maxLines: 3,
+                  ),
+                ),
+        
+                const SizedBox(height: 20),
+        
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0F766E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: _submitBooking,
+                    child: const Text(
+                      "Confirm Booking",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-
-                onChanged: (vendor) {
-                  setState(() {
-                    selectedVendor = vendor;
-                    selectedVendorId = vendor?.id;
-                  });
-                },
-
-                validator: (vendor) =>
-                    vendor == null ? "Please select vendor" : null,
-              ),
-
-              SizedBox(height: 20),
-
-              _card(
-                title: "Trip Details",
-                child: Column(
-                  children: [
-                    _datePickerTile(
-                      label: "Check-in Date",
-                      date: checkInDate,
-                      onPick: (d) => setState(() => checkInDate = d),
-                    ),
-                    _timePickerTile(
-                      label: "Check-in Time",
-                      time: checkInTime,
-                      onPick: (t) => setState(() => checkInTime = t),
-                    ),
-
-                    _datePickerTile(
-                      label: "Check-out Date",
-                      date: checkOutDate,
-                      onPick: (d) => setState(() => checkOutDate = d),
-                    ),
-                    _timePickerTile(
-                      label: "Check-out Time",
-                      time: checkOutTime,
-                      onPick: (t) => setState(() => checkOutTime = t),
-                    ),
-
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Select Category",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25),
-                    DropdownButtonFormField<int>(
-                      value: selectedCruiseTypeId,
-                      decoration: InputDecoration(
-                        labelText: "Cruise Type",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      items: isCruiseLoading
-                          ? []
-                          : cruiseTypes.map((type) {
-                              return DropdownMenuItem<int>(
-                                value: type.id,
-                                child: Text(type.name!),
-                              );
-                            }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCruiseTypeId = value;
-                        });
-                      },
-                      validator: (value) =>
-                          value == null ? "Please select cruise type" : null,
-                      hint: isCruiseLoading
-                          ? const Text("Loading...")
-                          : const Text("Select cruise type"),
-                    ),
-
-                    SizedBox(height: 20),
-                    DropdownButtonFormField<int>(
-                      value: selectedCategoryTypeId,
-                      decoration: InputDecoration(
-                        labelText: "Category",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      items: isCategoryLoading
-                          ? []
-                          : CategoryTypes.map((type) {
-                              return DropdownMenuItem<int>(
-                                value: type.id,
-                                child: Text(type.name),
-                              );
-                            }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCategoryTypeId = value;
-                        });
-                      },
-                      validator: (value) =>
-                          value == null ? "Please select category" : null,
-                      hint: isCategoryLoading
-                          ? const Text("Loading...")
-                          : const Text("Select Category"),
-                    ),
-                    SizedBox(height: 20),
-                    TextFormField(
-                      controller: passengerController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        labelText: "Enter number of Passengers",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter number of passengers";
-                        }
-                        final n = int.tryParse(value);
-                        if (n == null || n <= 0) {
-                          return "Enter a valid number";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        passengers = int.tryParse(value) ?? 0; // ✅ INT
-                      },
-                    ),
-
-                    SizedBox(height: 20),
-
-                    TextFormField(
-                      controller: kidsController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        labelText: "Enter number of Kids",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter number of kids";
-                        }
-                        final n = int.tryParse(value);
-                        if (n == null || n < 0) {
-                          return "Enter a valid number";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        kids = int.tryParse(value) ?? 0;
-                      },
-                    ),
-
-                    SizedBox(height: 20),
-
-                    _materialField(
-                      "Enter Rate (₹)",
-                      rateController,
-                      keyboard: TextInputType.number,
-                    ),
-                    _materialField(
-                      "Enter Collection Amount (₹)",
-                      collectionController,
-                      keyboard: TextInputType.number,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _timePickerField(
-                            label: "AC Start Time",
-                            time: acStartTime?.format(context),
-                            onTap: () async {
-                              final picked = await showTimePicker(
-                                context: context,
-                                initialTime: acStartTime ?? TimeOfDay.now(),
-                              );
-                              if (picked != null) {
-                                setState(() => acStartTime = picked);
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _timePickerField(
-                            label: "AC End Time",
-                            time: acEndTime?.format(context),
-                            onTap: () async {
-                              final picked = await showTimePicker(
-                                context: context,
-                                initialTime: acEndTime ?? TimeOfDay.now(),
-                              );
-                              if (picked != null) {
-                                setState(() => acEndTime = picked);
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ---------------- FOOD COUNTS ----------------
-                  ],
-                ),
-              ),
-              _card(
-                title: "Food Count",
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _numberInputField(
-                            label: "Veg Count",
-                            controller: vegController,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _numberInputField(
-                            label: "Non-Veg Count",
-                            controller: nonVegController,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _numberInputField(
-                      label: "Jain Food Count",
-                      controller: jainController,
-                    ),
-                  ],
-                ),
-              ),
-              _card(
-                title: "Customer Details",
-                child: Column(
-                  children: [
-                    _materialField("Enter Customer Name", nameController),
-                    _materialField(
-                      "Enter Phone Number",
-                      phoneController,
-                      keyboard: TextInputType.phone,
-                    ),
-                  ],
-                ),
-              ),
-
-              _card(
-                title: "Additional Notes",
-                child: _materialField(
-                  "Special requests",
-                  noteController,
-                  maxLines: 3,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F766E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  onPressed: _submitBooking,
-                  child: const Text(
-                    "Confirm Booking",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

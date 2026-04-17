@@ -52,32 +52,34 @@ class _VendorsTabState extends State<VendorsTab> {
         return Scaffold(
           backgroundColor: const Color(0xFFF8FAFC),
 
-          body: Column(
-            children: [
-              _buildSearchBar(),
-
-              if (provider.isSearching)
-                const LinearProgressIndicator(minHeight: 2),
-
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: context.read<VendorsProvider>().loadVendors,
-                  child: provider.filteredVendors.isEmpty
-                      ? const Center(child: Text("No vendors found"))
-                      : ListView.builder(
-                        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: provider.filteredVendors.length,
-                          itemBuilder: (context, index) {
-                            return _vendorCard(
-                              context,
-                              provider.filteredVendors[index],
-                            );
-                          },
-                        ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                _buildSearchBar(),
+            
+                if (provider.isSearching)
+                  const LinearProgressIndicator(minHeight: 2),
+            
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: context.read<VendorsProvider>().loadVendors,
+                    child: provider.filteredVendors.isEmpty
+                        ? const Center(child: Text("No vendors found"))
+                        : ListView.builder(
+                          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: provider.filteredVendors.length,
+                            itemBuilder: (context, index) {
+                              return _vendorCard(
+                                context,
+                                provider.filteredVendors[index],
+                              );
+                            },
+                          ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xFF0F766E),

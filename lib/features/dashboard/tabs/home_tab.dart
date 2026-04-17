@@ -48,47 +48,49 @@ class _HomeTabState extends State<HomeTab> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await home.loadBoatData(context);
-        },
-        color: const Color(0xFF0F766E),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Select Boat",
-                style: GoogleFonts.lato(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1E293B),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await home.loadBoatData(context);
+          },
+          color: const Color(0xFF0F766E),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Select Boat",
+                  style: GoogleFonts.lato(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF1E293B),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              _buildBoatDropdown(home),
-              const SizedBox(height: 16),
-              Text(
-                "Availability Calendar",
-                style: GoogleFonts.lato(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1E293B),
+                const SizedBox(height: 10),
+                _buildBoatDropdown(home),
+                const SizedBox(height: 16),
+                Text(
+                  "Availability Calendar",
+                  style: GoogleFonts.lato(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF1E293B),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              _buildCalendar(home),
-              const SizedBox(height: 10),
-              if (_selectedDay == null)
-                const Text(
-                  "Select a date to view availability",
-                  style: TextStyle(color: Colors.grey),
-                )
-              else
-                _buildAvailabilityInfo(home),
-            ],
+                const SizedBox(height: 12),
+                _buildCalendar(home),
+                const SizedBox(height: 10),
+                if (_selectedDay == null)
+                  const Text(
+                    "Select a date to view availability",
+                    style: TextStyle(color: Colors.grey),
+                  )
+                else
+                  _buildAvailabilityInfo(home),
+              ],
+            ),
           ),
         ),
       ),

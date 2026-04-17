@@ -3,11 +3,14 @@ import 'package:boat_booking/providers/dashboard_provider.dart';
 import 'package:boat_booking/providers/home_provider.dart';
 import 'package:boat_booking/providers/vendors_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'features/splash/splash_screen.dart';
 import 'providers/auth_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(
     MultiProvider(
       providers: [

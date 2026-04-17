@@ -70,203 +70,205 @@ class _BookingDetailsView extends StatelessWidget {
         backgroundColor: const Color(0xFF0F766E),
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // ---------------- CUSTOMER ----------------
-            _section(
-              title: "Customer Details",
-              children: [
-                _row("Name", booking.name),
-                _row("Phone", booking.phone),
-              ],
-            ),
-
-            // ---------------- BOOKING INFO ----------------
-            _section(
-              title: "Booking Info",
-              children: [
-                _row("Booking Date", provider.formatDate(booking.bookingDate)),
-                _row("Check-in", provider.formatDateTime(booking.checkin)),
-                _row("Check-out", provider.formatDateTime(booking.checkout)),
-              ],
-            ),
-
-            // ---------------- CRUISE & VENDOR ----------------
-            _section(
-              title: "Cruise & Vendor",
-              children: [
-                _row("Cruise Type", booking.cruiseType?.name),
-                _row("Vendor Company", booking.vendor?.id.toString()),
-                _row("Vendor Name", booking.vendor?.name),
-                _row("Vendor Phone", booking.vendor?.phone1),
-              ],
-            ),
-
-            // ---------------- Ac time and Category ----------------
-
-            _section(
-              title: "Ac time & Category",
-              children: [
-                _row("Ac time start", formatTimeOnly(booking.acStartTime)),
-                _row("Ac time end", formatTimeOnly(booking.acEndTime)),
-                _row("Category", booking.category?.name),
-              ],
-            ),
-
-            // ---------------- PASSENGERS ----------------
-            _section(
-              title: "Passengers",
-              children: [
-                _row("Adults", booking.passangers?.toString()),
-                _row("Kids", booking.kids?.toString()),
-              ],
-            ),
-
-            // ---------------- FOOD ----------------
-            _section(
-              title: "Food Details",
-              children: [
-                _row("Veg", booking.vegCount.toString()),
-                _row("Non-Veg", booking.nonVegCount?.toString()),
-                _row("Jain Food", booking.jainFood?.toString()),
-              ],
-            ),
-
-            // ---------------- PAYMENT ----------------
-            _section(
-              title: "Payment",
-              children: [
-                _row("Rate", "₹ ${booking.rate}"),
-                _row("Collected", "₹ ${booking.collectionAmount}"),
-              ],
-            ),
-
-            // ---------------- NOTES ----------------
-            if (booking.note != null && booking.note!.isNotEmpty)
-              Container(
-                width: double.infinity,
-                height: 120,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                  border: Border.all(
-                    color: const Color(0xFF0F766E).withOpacity(0.3),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Notes",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F766E),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(
-                          booking.note!,
-                          style: GoogleFonts.lato(
-                            fontSize: 14,
-                            height: 1.4,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // ---------------- CUSTOMER ----------------
+              _section(
+                title: "Customer Details",
+                children: [
+                  _row("Name", booking.name),
+                  _row("Phone", booking.phone),
+                ],
               ),
-
-            const SizedBox(height: 20),
-
-            // ---------------- ACTIONS ----------------
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MultiProvider(
-                            providers: [
-                              ChangeNotifierProvider(
-                                create: (_) => CruiseTypeProvider(),
-                              ),
-                            ],
-                            child: EditBookingScreen(booking: booking),
+        
+              // ---------------- BOOKING INFO ----------------
+              _section(
+                title: "Booking Info",
+                children: [
+                  _row("Booking Date", provider.formatDate(booking.bookingDate)),
+                  _row("Check-in", provider.formatDateTime(booking.checkin)),
+                  _row("Check-out", provider.formatDateTime(booking.checkout)),
+                ],
+              ),
+        
+              // ---------------- CRUISE & VENDOR ----------------
+              _section(
+                title: "Cruise & Vendor",
+                children: [
+                  _row("Cruise Type", booking.cruiseType?.name),
+                  _row("Vendor Company", booking.vendor?.id.toString()),
+                  _row("Vendor Name", booking.vendor?.name),
+                  _row("Vendor Phone", booking.vendor?.phone1),
+                ],
+              ),
+        
+              // ---------------- Ac time and Category ----------------
+        
+              _section(
+                title: "Ac time & Category",
+                children: [
+                  _row("Ac time start", formatTimeOnly(booking.acStartTime)),
+                  _row("Ac time end", formatTimeOnly(booking.acEndTime)),
+                  _row("Category", booking.category?.name),
+                ],
+              ),
+        
+              // ---------------- PASSENGERS ----------------
+              _section(
+                title: "Passengers",
+                children: [
+                  _row("Adults", booking.passangers?.toString()),
+                  _row("Kids", booking.kids?.toString()),
+                ],
+              ),
+        
+              // ---------------- FOOD ----------------
+              _section(
+                title: "Food Details",
+                children: [
+                  _row("Veg", booking.vegCount.toString()),
+                  _row("Non-Veg", booking.nonVegCount?.toString()),
+                  _row("Jain Food", booking.jainFood?.toString()),
+                ],
+              ),
+        
+              // ---------------- PAYMENT ----------------
+              _section(
+                title: "Payment",
+                children: [
+                  _row("Rate", "₹ ${booking.rate}"),
+                  _row("Collected", "₹ ${booking.collectionAmount}"),
+                ],
+              ),
+        
+              // ---------------- NOTES ----------------
+              if (booking.note != null && booking.note!.isNotEmpty)
+                Container(
+                  width: double.infinity,
+                  height: 120,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: const Color(0xFF0F766E).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Notes",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F766E),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Text(
+                            booking.note!,
+                            style: GoogleFonts.lato(
+                              fontSize: 14,
+                              height: 1.4,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
-                      );
-
-                      if (result != null && result is Map<String, dynamic>) {
-                        final success = await context
-                            .read<BookingDetailsProvider>()
-                            .updateBooking(result);
-
-                        if (success && context.mounted) {
-                          Navigator.pop(context, true);
-                        }
-                      }
-                    },
-                    child: const Text("Edit"),
+                      ),
+                    ],
                   ),
                 ),
-
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    onPressed: provider.isDeleting
-                        ? null
-                        : () async {
-                            final confirm = await showDeleteConfirmationSheet(
-                              context,
-                            );
-
-                            if (confirm == true) {
-                              final success = await provider.deleteBooking();
-
-                              if (success && context.mounted) {
-                                Navigator.pop(context, true);
-                              }
-                            }
-                          },
-                    child: provider.isDeleting
-                        ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
+        
+              const SizedBox(height: 20),
+        
+              // ---------------- ACTIONS ----------------
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MultiProvider(
+                              providers: [
+                                ChangeNotifierProvider(
+                                  create: (_) => CruiseTypeProvider(),
+                                ),
+                              ],
+                              child: EditBookingScreen(booking: booking),
                             ),
-                          )
-                        : const Text(
-                            "Delete",
-                            style: TextStyle(color: Colors.white),
                           ),
+                        );
+        
+                        if (result != null && result is Map<String, dynamic>) {
+                          final success = await context
+                              .read<BookingDetailsProvider>()
+                              .updateBooking(result);
+        
+                          if (success && context.mounted) {
+                            Navigator.pop(context, true);
+                          }
+                        }
+                      },
+                      child: const Text("Edit"),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+        
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      onPressed: provider.isDeleting
+                          ? null
+                          : () async {
+                              final confirm = await showDeleteConfirmationSheet(
+                                context,
+                              );
+        
+                              if (confirm == true) {
+                                final success = await provider.deleteBooking();
+        
+                                if (success && context.mounted) {
+                                  Navigator.pop(context, true);
+                                }
+                              }
+                            },
+                      child: provider.isDeleting
+                          ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

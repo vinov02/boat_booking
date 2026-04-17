@@ -72,31 +72,33 @@ class _VendorDetailScreenState extends State<VendorDetailScreen> {
 
       floatingActionButton: _actionButtons(),
 
-      body: RefreshIndicator(
-        color: const Color(0xFF0F766E),
-        onRefresh: _reloadVendor,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _headerCard(),
-              const SizedBox(height: 16),
-              _infoCard(Icons.person, "Vendor Name", vendor.name!),
-              _infoCard(Icons.phone, "Phone Number", vendor.phone1 ?? "-"),
-              _infoCard(
-                Icons.phone_android,
-                "Alternate Phone",
-                vendor.phone2 ?? "-",
-              ),
-              _infoCard(
-                Icons.location_on,
-                "Address",
-                vendor.address ?? "-",
-                multiline: true,
-              ),
-              const SizedBox(height: 80),
-            ],
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: const Color(0xFF0F766E),
+          onRefresh: _reloadVendor,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _headerCard(),
+                const SizedBox(height: 16),
+                _infoCard(Icons.person, "Vendor Name", vendor.name!),
+                _infoCard(Icons.phone, "Phone Number", vendor.phone1 ?? "-"),
+                _infoCard(
+                  Icons.phone_android,
+                  "Alternate Phone",
+                  vendor.phone2 ?? "-",
+                ),
+                _infoCard(
+                  Icons.location_on,
+                  "Address",
+                  vendor.address ?? "-",
+                  multiline: true,
+                ),
+                const SizedBox(height: 80),
+              ],
+            ),
           ),
         ),
       ),

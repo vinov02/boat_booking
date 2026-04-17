@@ -128,127 +128,129 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
         backgroundColor: const Color(0xFF0F766E),
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // ---------------- CUSTOMER ----------------
-            _section("Customer Details", [
-              _field("Name", nameCtrl),
-              _field("Phone", phoneCtrl, keyboard: TextInputType.phone),
-            ]),
-
-            // ---------------- DATE & TIME ----------------
-            _section("Booking Time", [
-              _dateTile("Check-in", checkIn, () => _pickDateTime(true)),
-              _dateTile("Check-out", checkOut, () => _pickDateTime(false)),
-            ]),
-
-            // ---------------- CRUISE ----------------
-            Consumer<CruiseTypeProvider>(
-              builder: (context, cruiseProvider, _) {
-                return SizedBox(
-                  width: 300,
-                  child: GestureDetector(
-                    onTap: () {
-                      cruiseProvider.loadCruiseTypes();
-                    },
-                    child: AbsorbPointer(
-                      child: DropdownButtonFormField<int>(
-                        value: selectedCruiseTypeId,
-                        decoration: InputDecoration(
-                          labelText: "Cruise Type",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // ---------------- CUSTOMER ----------------
+              _section("Customer Details", [
+                _field("Name", nameCtrl),
+                _field("Phone", phoneCtrl, keyboard: TextInputType.phone),
+              ]),
+        
+              // ---------------- DATE & TIME ----------------
+              _section("Booking Time", [
+                _dateTile("Check-in", checkIn, () => _pickDateTime(true)),
+                _dateTile("Check-out", checkOut, () => _pickDateTime(false)),
+              ]),
+        
+              // ---------------- CRUISE ----------------
+              Consumer<CruiseTypeProvider>(
+                builder: (context, cruiseProvider, _) {
+                  return SizedBox(
+                    width: 300,
+                    child: GestureDetector(
+                      onTap: () {
+                        cruiseProvider.loadCruiseTypes();
+                      },
+                      child: AbsorbPointer(
+                        child: DropdownButtonFormField<int>(
+                          value: selectedCruiseTypeId,
+                          decoration: InputDecoration(
+                            labelText: "Cruise Type",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
+                          items: cruiseProvider.isLoading
+                              ? []
+                              : cruiseProvider.cruiseTypes.map((type) {
+                                  return DropdownMenuItem<int>(
+                                    value: type.id,
+                                    child: Text(type.name!),
+                                  );
+                                }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCruiseTypeId = value;
+                            });
+                          },
+                          hint: cruiseProvider.isLoading
+                              ? const Text("Loading...")
+                              : const Text("Select cruise type"),
                         ),
-                        items: cruiseProvider.isLoading
-                            ? []
-                            : cruiseProvider.cruiseTypes.map((type) {
-                                return DropdownMenuItem<int>(
-                                  value: type.id,
-                                  child: Text(type.name!),
-                                );
-                              }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedCruiseTypeId = value;
-                          });
-                        },
-                        hint: cruiseProvider.isLoading
-                            ? const Text("Loading...")
-                            : const Text("Select cruise type"),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-
-            // ---------------- VENDOR ----------------
-            // _section("Vendor", [
-            //   DropdownButtonFormField<int>(
-            //     value: selectedVendorId,
-            //     decoration:
-            //         const InputDecoration(labelText: "Vendor"),
-            //     items: widget.booking.ve
-            //         ?.map(
-            //           (v) => DropdownMenuItem(
-            //             value: v.id,
-            //             child: Text(v.companyName ?? v.name ?? "-"),
-            //           ),
-            //         )
-            //         .toList(),
-            //     onChanged: (v) => setState(() => selectedVendorId = v),
-            //   ),
-            // ]),
-
-            // ---------------- PASSENGERS ----------------
-            _section("Passengers", [
-              _field("Adults", adultsCtrl, keyboard: TextInputType.number),
-              _field("Kids", kidsCtrl, keyboard: TextInputType.number),
-            ]),
-
-            // ---------------- FOOD ----------------
-            _section("Food Details", [
-              _field("Veg", vegCtrl, keyboard: TextInputType.number),
-              _field("Non-Veg", nonVegCtrl, keyboard: TextInputType.number),
-              _field("Jain Food", jainCtrl, keyboard: TextInputType.number),
-            ]),
-
-            // ---------------- PAYMENT ----------------
-            _section("Payment", [
-              _field("Rate", rateCtrl, keyboard: TextInputType.number),
-              _field(
-                "Collected",
-                collectedCtrl,
-                keyboard: TextInputType.number,
+                  );
+                },
               ),
-            ]),
-
-            // ---------------- NOTES ----------------
-            _section("Notes", [
-              TextField(
-                controller: noteCtrl,
-                maxLines: 3,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-              ),
-            ]),
-
-            const SizedBox(height: 20),
-
-            // ---------------- SAVE ----------------
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0F766E),
+        
+              // ---------------- VENDOR ----------------
+              // _section("Vendor", [
+              //   DropdownButtonFormField<int>(
+              //     value: selectedVendorId,
+              //     decoration:
+              //         const InputDecoration(labelText: "Vendor"),
+              //     items: widget.booking.ve
+              //         ?.map(
+              //           (v) => DropdownMenuItem(
+              //             value: v.id,
+              //             child: Text(v.companyName ?? v.name ?? "-"),
+              //           ),
+              //         )
+              //         .toList(),
+              //     onChanged: (v) => setState(() => selectedVendorId = v),
+              //   ),
+              // ]),
+        
+              // ---------------- PASSENGERS ----------------
+              _section("Passengers", [
+                _field("Adults", adultsCtrl, keyboard: TextInputType.number),
+                _field("Kids", kidsCtrl, keyboard: TextInputType.number),
+              ]),
+        
+              // ---------------- FOOD ----------------
+              _section("Food Details", [
+                _field("Veg", vegCtrl, keyboard: TextInputType.number),
+                _field("Non-Veg", nonVegCtrl, keyboard: TextInputType.number),
+                _field("Jain Food", jainCtrl, keyboard: TextInputType.number),
+              ]),
+        
+              // ---------------- PAYMENT ----------------
+              _section("Payment", [
+                _field("Rate", rateCtrl, keyboard: TextInputType.number),
+                _field(
+                  "Collected",
+                  collectedCtrl,
+                  keyboard: TextInputType.number,
                 ),
-                onPressed: _onSave,
-                child: const Text("Save Changes",style: TextStyle(color: Colors.white),),
+              ]),
+        
+              // ---------------- NOTES ----------------
+              _section("Notes", [
+                TextField(
+                  controller: noteCtrl,
+                  maxLines: 3,
+                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                ),
+              ]),
+        
+              const SizedBox(height: 20),
+        
+              // ---------------- SAVE ----------------
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0F766E),
+                  ),
+                  onPressed: _onSave,
+                  child: const Text("Save Changes",style: TextStyle(color: Colors.white),),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

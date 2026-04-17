@@ -34,13 +34,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Text(
-          "Alleppey Boat Booking",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.teal,
+      body: SafeArea(
+        child: Center(
+          child: Text(
+            "Alleppey Boat Booking",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal,
+            ),
           ),
         ),
       ),

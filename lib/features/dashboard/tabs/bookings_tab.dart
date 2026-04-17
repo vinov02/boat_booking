@@ -35,25 +35,27 @@ class _BookingsTabState extends State<BookingsTab> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      body: Column(
-        children: [
-          _searchBar(context),
-          if (provider.isSearching)
-            const LinearProgressIndicator(minHeight: 2),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: provider.loadBookings,
-              child: provider.filteredBookings.isEmpty
-                  ? const Center(child: Text("No bookings found"))
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: provider.filteredBookings.length,
-                      itemBuilder: (_, i) =>
-                          _bookingCard(context, provider.filteredBookings[i]),
-                    ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _searchBar(context),
+            if (provider.isSearching)
+              const LinearProgressIndicator(minHeight: 2),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: provider.loadBookings,
+                child: provider.filteredBookings.isEmpty
+                    ? const Center(child: Text("No bookings found"))
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: provider.filteredBookings.length,
+                        itemBuilder: (_, i) =>
+                            _bookingCard(context, provider.filteredBookings[i]),
+                      ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
